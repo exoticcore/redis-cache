@@ -29,7 +29,9 @@ pipeline {
         }
         stage('List Files') {
             steps {
-                sh 'ls -la'
+                dir('template/nodejs') {
+                    sh 'ls -la'
+                }
             }
         }
         // stage('Build Docker Image') {
