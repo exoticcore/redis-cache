@@ -34,6 +34,11 @@ pipeline {
                 }
             }
         }
+        stage('List again') {
+            steps {
+                sh 'ls -la'
+            }
+        }
         // stage('Build Docker Image') {
         //     steps {
         //         script {
