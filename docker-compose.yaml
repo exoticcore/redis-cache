@@ -1,0 +1,87 @@
+version: '3.9'
+
+services:
+  node:
+    build:
+      context: ./template/nodejs
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3034:3034
+    environment:
+      - PORT=3034
+      - REDIS_URL=redis://redis:6379
+      - REDIS_PASSWORD=secretpwd
+      - TTL_CACHE=600
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASS=secret
+      - DB_NAME=rediscasedb
+      - DB_PORT=3306
+    networks:
+      - shared_network
+      - internal_network
+    depends_on:
+      - redis
+      - db
+
+  codeiginter:
+    build:
+      context: ./template/codeigniter3
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3035:80
+    networks:
+      - shared_network
+      - internal_network
+    depends_on:
+      # - redis
+      - db
+  db:
+    image: mysql:9
+    restart: always
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: rediscasedb
+    volumes:
+      - ./mysql/mysql-init:/docker-entrypoint-initdb.d
+      - ./mysql/mysql-logs:/var/log/mysql
+    networks:
+      - internal_network
+    command: --general-log=1 --general-log-file=/var/log/mysql/general.log
+
+  redis:
+    image: redis:7.2.1
+    ports:
+      - 6380:6379
+    restart: always
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: ['redis-server', '/usr/local/etc/redis/redis.conf']
+    networks:
+      - internal_network
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: always
+    ports:
+      - '5540:5540'
+    depends_on:
+      - redis
+    volumes:
+      - redis-insight:/data
+    networks:
+      - shared_network
+      - internal_network
+
+networks:
+  shared_network:
+    external: true
+  internal_network:
+    internal: true
+
+volumes:
+  redis-insight:
