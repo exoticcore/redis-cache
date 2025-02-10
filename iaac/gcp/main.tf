@@ -5,6 +5,12 @@ terraform {
       version = "~> 6.19.0"
     }
   }
+
+  backend "gcs" {
+    bucket = "sc-spark-terraform-state-bucket"
+    prefix = "terraform/state"
+
+  }
 }
 
 provider "google" {
