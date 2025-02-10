@@ -32,24 +32,5 @@ pipeline {
                 sh 'ls -la'
             }
         }
-    //     stage('Build Artifact') {
-    //         steps {
-    //             script {
-    //                 dir('template/nodejs') {
-    //                     dockerImage = docker.build("${registry}:${BUILD_NUMBER}", "-f Dockerfile .")
-    //                 }
-    //             }
-    //         }
-    //     }
-    //    stage('Push Docker Image') {
-    //         steps {
-    //             script {
-    //                 docker.withRegistry('https://us-docker.pkg.dev', registryCredential) {
-    //                     dockerImage.push()
-    //                     dockerImage.push('latest')
-    //                 }
-    //             }
-    //         }
-    //     }
     }
 }
