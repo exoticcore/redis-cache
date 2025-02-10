@@ -1,6 +1,6 @@
 variable "environment" {
-    description = "The environment to deploy to"
-    type        = string
+  description = "The environment to deploy to"
+  type        = string
 }
 
 variable "project_id" {
