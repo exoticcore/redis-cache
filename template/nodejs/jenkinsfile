@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Hello') {
             steps {
-                echo 'Hello World from Main'
+                echo 'Hello World from NodeJS'
             }
         }
         stage('list files') {
