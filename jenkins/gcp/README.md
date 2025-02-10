@@ -2,6 +2,10 @@
 
 ssh-keygen -t rsa -b 2048 -f ~/.ssh/jenkins-key
 
+# Copy the SSH key to the Bastion host
+
+scp -i ~/.ssh/jenkins-key ~/.ssh/jenkins-key bastion@35.186.150.56:~/.ssh/jenkins-key
+
 # SSH into Bastion host
 
 ssh -i ~/.ssh/my-jenkins bastion@<bastion-public-ip>
