@@ -20,5 +20,3 @@ override.tf.json
 # Ignore sensitive files
 *.pem
 *.key
-
-# jenkins/

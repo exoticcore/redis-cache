@@ -7,15 +7,30 @@ pipeline {
     agent any
 
     stages {
-        stage('Hello') {
+        stage('Unit Test') {
             steps {
-                echo 'Hello World from NodeJS'
+                echo 'Running Unit Test'
             }
         }
-        stage('list files') {
+        stage('Integration Test') {
+            steps {
+                echo 'Running Integration Test'
+            }
+        }
+        stage('End to End Test') {
+            steps {
+                echo 'Running End to End Test'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube Analysis'
+            }
+        }
+        stage('Build Artifact') {
             steps {
                 dir('template/nodejs') {
-                    sh 'ls -la'
+                    dockerImage = docker.build("nodejs")
                 }
             }
         }
