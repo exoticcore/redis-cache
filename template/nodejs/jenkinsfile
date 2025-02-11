@@ -1,58 +1,69 @@
 pipeline {
     environment {
         registry = "asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository"
-        registryCredential = ""
-        dockerImage = ''
+        registryCredential = "gcp-credentials-id"
+        dockerImage = "node-cache:${env.BUILD_ID}"
     }
     agent any
 
-   stages {
+    stages {
         stage('Change Directory') {
             steps {
                 dir('template/nodejs') {
                     script {
+                        // Run the rest of the pipeline within this directory
                         pipeline {
                             stages {
                                 stage('Unit Test') {
                                     steps {
-                                        echo 'Unit Test'
+                                        echo 'Running Unit Test'
+                                        // Add your unit test commands here
                                     }
                                 }
                                 stage('Integration Test') {
                                     steps {
-                                        echo 'Integration Test'
+                                        echo 'Running Integration Test'
+                                        // Add your integration test commands here
                                     }
                                 }
                                 stage('End to End Test') {
                                     steps {
-                                        echo 'End to End Test'
+                                        echo 'Running End to End Test'
+                                        // Add your end-to-end test commands here
                                     }
                                 }
-                                stage('SonarQube analysis') {
+                                stage('SonarQube Analysis') {
                                     steps {
-                                        echo 'SonarQube analysis'
+                                        echo 'Running SonarQube Analysis'
+                                        // Add your SonarQube analysis commands here
                                     }
                                 }
-                                stage('Build Image') {
+                                stage('Build Docker Image') {
                                     steps {
-                                        sh 'ls -la'
+                                        script {
+                                            echo '${registry}:v${env.BUILD_ID}'
+                                            // sh "docker build -t ${registry}/${dockerImage} ."
+                                        }
                                     }
                                 }
-                                stage('Push Image') {
-                                    steps {
-                                        echo '${registry}'
-                                    }
-                                }
-                                stage('Remove Image') {
-                                    steps {
-                                        echo 'Remove Image'
-                                    }
-                                }
+                                // stage('Push Docker Image') {
+                                //     steps {
+                                //         script {
+                                //             withCredentials([file(credentialsId: registryCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                                //                 sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                                //                 sh 'gcloud auth configure-docker asia-southeast1-docker.pkg.dev'
+                                //                 sh "docker push ${registry}/${dockerImage}"
+                                //                 sh "docker tag ${registry}/${dockerImage} ${registry}/node-cache:latest"
+                                //                 sh "docker push ${registry}/node-cache:latest"
+                                //             }
+                                //         }
+                                //     }
+                                // }
                             }
                         }
                     }
                 }
             }
         }
-   }
+    }
 }
