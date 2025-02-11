@@ -11,7 +11,7 @@ resource "google_compute_instance" "jenkins_server" {
   boot_disk {
     initialize_params {
       image = "ubuntu-os-cloud/ubuntu-2204-lts"
-      size  = 10
+      size  = 20
     }
   }
 
@@ -23,45 +23,45 @@ resource "google_compute_instance" "jenkins_server" {
     ssh-keys = "jenkins:${file(var.ssh_public_key)}"
   }
 
-  metadata_startup_script = <<-EOF
-   #!/bin/bash
-    set -e
+  # metadata_startup_script = <<-EOF
+  #  #!/bin/bash
+  #   set -e
 
-    # Log file
-    exec > /var/log/startup-script.log 2>&1
+  #   # Log file
+  #   exec > /var/log/startup-script.log 2>&1
 
-    # Set hostname
-    sudo hostnamectl set-hostname jenkins-server
-    echo "127.0.1.1 jenkins-server" | sudo tee -a /etc/hosts
+  #   # Set hostname
+  #   sudo hostnamectl set-hostname jenkins-server
+  #   echo "127.0.1.1 jenkins-server" | sudo tee -a /etc/hosts
 
-    # Set DNS
-    echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
-    echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf
+  #   # Set DNS
+  #   echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf
+  #   echo "nameserver 8.8.4.4" | sudo tee -a /etc/resolv.conf
 
-    # Update repository to use main server
-    sudo sed -i 's|http://asia-southeast1.gce.archive.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
+  #   # Update repository to use main server
+  #   sudo sed -i 's|http://asia-southeast1.gce.archive.ubuntu.com/ubuntu|http://archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list
 
-    # Install Docker
-    sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-    sudo apt-get update
-    sudo apt-get install -y docker-ce
+  #   # Install Docker
+  #   sudo apt-get update
+  #   sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+  #   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  #   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  #   sudo apt-get update
+  #   sudo apt-get install -y docker-ce
 
-    # Add Jenkins user to Docker group
-    sudo usermod -aG docker jenkins
+  #   # Add Jenkins user to Docker group
+  #   sudo usermod -aG docker jenkins
 
-    # Enable and start Docker service
-    sudo systemctl enable docker
-    sudo systemctl start docker
+  #   # Enable and start Docker service
+  #   sudo systemctl enable docker
+  #   sudo systemctl start docker
 
-    sudo docker pull jenkins/jenkins:lts
+  #   sudo docker pull jenkins/jenkins:lts
 
-    # Pull and run Jenkins Docker container
-    sudo docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
+  #   # Pull and run Jenkins Docker container
+  #   sudo docker run -d --name jenkins -p 8080:8080 -p 50000:50000 -v jenkins_home:/var/jenkins_home jenkins/jenkins:lts
 
-  EOF
+  # EOF
 }
 
 resource "google_compute_firewall" "jenkins_firewall" {

@@ -17,3 +17,5 @@ ssh -i ~/.ssh/my-jenkins-key jenkins@<jeknkins-private-ip>
 # SSH Tunnel
 
 ssh -i ~/.ssh/my-jenkins-key -L 8080:JENKINS_IP:8080 jenkins@BASTION_IP
+
+https://www.jenkins.io/doc/book/installing/linux/

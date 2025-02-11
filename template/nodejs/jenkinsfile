@@ -1,59 +1,48 @@
 pipeline {
     environment {
-        registry = "asia-southeast1-docker.pkg.dev/${var.project_id}/nodecache"
+        registry = "asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository"
         registryCredential = ""
         dockerImage = ''
     }
     agent any
 
-    stages {
-        stage('Unit Test') {
-            steps {
-                echo 'Running Unit Test'
-            }
-        }
-        stage('Integration Test') {
-            steps {
-                echo 'Running Integration Test'
-            }
-        }
-        stage('End to End Test') {
-            steps {
-                echo 'Running End to End Test'
-            }
-        }
-        stage('SonarQube Analysis') {
-            steps {
-                echo 'Running SonarQube Analysis'
-            }
-        }
-        stage('List Files') {
+   stages {
+        stage('Change Directory') {
             steps {
                 dir('template/nodejs') {
-                    sh 'ls -la'
+                    script {
+                        pipeline {
+                            stages {
+                                stage('Unit Test') {
+                                    steps {
+                                        echo 'Unit Test'
+                                    }
+                                }
+                                stage('Integration Test') {
+                                    steps {
+                                        echo 'Integration Test'
+                                    }
+                                }
+                                stage('End to End Test') {
+                                    steps {
+                                        echo 'End to End Test'
+                                    }
+                                }
+                                stage('SonarQube analysis') {
+                                    steps {
+                                        echo 'SonarQube analysis'
+                                    }
+                                }
+                                stage('Build Image') {
+                                    steps {
+                                        sh 'ls -la'
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
-        stage('List again') {
-            steps {
-                sh 'ls -la'
-            }
-        }
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             dockerImage = docker.build("${registry}:v${BUILD_NUMBER}")
-        //         }
-        //     }
-        // }
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry( '', registryCredential ) {
-        //                 dockerImage.push()
-        //             }
-        //         }
-        //     }
-        // }
-    }
+   }
 }
