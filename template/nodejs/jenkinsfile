@@ -48,8 +48,8 @@ pipeline {
                         sh "docker tag ${registry}:v${env.BUILD_NUMBER} ${registry}:latest"
                         sh "docker push ${registry}:latest"
                     }
+                    echo 'Push image successfully'
                 }
-                echo 'Push image successfully'
             }
         }
         stage('Remove Docker Image') {
@@ -58,9 +58,9 @@ pipeline {
                     sh "docker rmi ${registry}:v${env.BUILD_NUMBER}"
                     sh "docker rmi ${registry}:latest"
                 }
+                echo 'Remove image successfully'
             }
 
-            echo 'Remove image successfully'
         }
     }
 }
