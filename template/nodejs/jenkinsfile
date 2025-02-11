@@ -31,8 +31,9 @@ pipeline {
             steps {
                 dir('template/nodejs') {
                     script {
-                        echo "${registry}:${env.BUILD_NUMBER}"
+                        echo "${registry}:v${env.BUILD_NUMBER}"
                         sh 'whoami'
+                        sh 'docker compose ps'
                         // sh "docker build -t ${registry}:v${env.BUILD_NUMBER} ."
                     }
                 }
