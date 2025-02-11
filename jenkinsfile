@@ -10,17 +10,14 @@ pipeline {
         stage('Deploy') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
-                        // Copy docker-compose.yaml and nginx.conf to the remote host
-                        sh "scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yaml redis.conf $SSH_USER@${DEV_HOST}:/home/$SSH_USER/"
-
-                        // Run commands on the remote host to deploy the Docker Compose stack and configure Nginx
-                        sh """
-                            ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@${DEV_HOST} << EOF
-                            cd /home/$SSH_USER
-                            docker-compose down
-                            docker-compose up -d
-                            EOF
-                        """
+                        scp -o StrictHostKeyChecking=no -i ${SSH_KEY} docker-compose.yaml ${SSH_USER}@34.87.155.25:/home/${SSH_USER}/
+Shell Script
+0.3 sec
+Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
+		 Affected argument(s) used the following variable(s): [SSH_KEY, SSH_USER]
+		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
+/var/lib/jenkins/workspace/Deployment(Dev)@tmp/durable-ff3b6ea3/script.sh.copy: 1: Syntax error: "(" unexpected
+script returned exit code 2
                     }
             }
         }
