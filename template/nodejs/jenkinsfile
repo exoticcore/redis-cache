@@ -60,7 +60,7 @@ pipeline {
                 }
             }
 
-            sh 'Remove image successfully'
+            sh 'Remove image successfull'
         }
     }
 }
