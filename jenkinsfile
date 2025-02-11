@@ -27,8 +27,8 @@ pipeline {
                         cd /home/$SSH_USER
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS || echo "Service account key file not found"
                         gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
-                        docker compose down || echo "docker-compose not found"
-                        docker compose up -d || echo "docker-compose not found"
+                        sudo docker compose down || echo "docker-compose not found"
+                        sudo docker compose up -d || echo "docker-compose not found"
                         EOF
                     '''
                 }
