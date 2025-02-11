@@ -4,6 +4,7 @@ pipeline {
     environment {
         DEV_HOST = "34.87.155.25"
         SSH_CREDENTIALS_ID = "ssh-dev-credentials-id"
+        registryCredential = "gcp-credentials-id"
     }
 
     stages {
@@ -14,7 +15,15 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'), file(credentialsId: registryCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@$DEV_HOST << EOF
+                        cd /home/$SSH_USER
+                        gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                        gcloud auth configure-docker asia-southeast1-docker.pkg.dev
+                        EOF
+                    ''''
+
                     // Copy docker-compose.yaml and redis.conf to the remote host
                     sh '''
                         scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yaml redis.conf $SSH_USER@$DEV_HOST:/home/$SSH_USER/
