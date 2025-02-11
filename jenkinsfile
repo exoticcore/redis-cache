@@ -6,13 +6,12 @@ pipeline {
         SSH_CREDENTIALS_ID = "ssh-dev-credentials-id"
     }
 
-    stage ('IaC Terraform Apply') {
-        steps {
-            echo 'Running Terraform Apply'
-        }
-    }
-
     stages {
+        stage ('IaC Terraform Apply') {
+            steps {
+                echo 'Running Terraform Apply'
+            }
+        }
         stage('Deploy') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
