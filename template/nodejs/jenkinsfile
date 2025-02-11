@@ -32,7 +32,8 @@ pipeline {
                 dir('template/nodejs') {
                     script {
                         echo "${registry}:${env.BUILD_NUMBER}"
-                        sh "docker build -t ${registry}:${env.BUILD_NUMBER} ."
+                        sh 'whoami'
+                        // sh "docker build -t ${registry}:v${env.BUILD_NUMBER} ."
                     }
                 }
             }
