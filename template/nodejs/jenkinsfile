@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        registry = "asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository"
+        registry = "asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository/node-cache"
         registryCredential = "gcp-credentials-id"
         dockerImage = ''
     }
@@ -31,31 +31,32 @@ pipeline {
             steps {
                 dir('template/nodejs') {
                     script {
-                        echo "${registry}:v${env.BUILD_NUMBER}"
-                        sh 'whoami'
-                        sh 'docker images'
-                        // sh "docker build -t ${registry}:v${env.BUILD_NUMBER} ."
+                        sh "docker build -t ${registry}:v${env.BUILD_NUMBER} ."
+                        echo "image was built ${registry}:v${env.BUILD_NUMBER}"
                     }
                 }
             }
         }
-        stage('List again') {
+        stage('Push Docker Image') {
             steps {
-                sh 'ls -la'
+                script {
+                    withCredentials([file(credentialsId: registryCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                        sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                        sh 'gcloud auth configure-docker asia-southeast1-docker.pkg.dev'
+                        sh "docker push ${registry}:v${env.BUILD_NUMBER}"
+                        sh "docker tag ${registry}:v${env.BUILD_NUMBER} ${registry}:latest"
+                        sh "docker push ${registry}:latest"
+                    }
+                }
             }
         }
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             withCredentials([file(credentialsId: registryCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-        //                 sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-        //                 sh 'gcloud auth configure-docker asia-southeast1-docker.pkg.dev'
-        //                 sh "docker push ${registry}:${env.BUILD_NUMBER}"
-        //                 sh "docker tag ${registry}:${env.BUILD_NUMBER} ${registry}:latest"
-        //                 sh "docker push ${registry}:latest"
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Remove Docker Image') {
+            steps {
+                script {
+                    sh "docker rmi ${registry}:v${env.BUILD_NUMBER}"
+                    sh "docker rmi ${registry}:latest"
+                }
+            }
+        }
     }
 }
