@@ -1,7 +1,7 @@
 pipeline {
     environment {
         registry = "asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository"
-        registryCredential = ""
+        registryCredential = "gcp-credentials-id"
         dockerImage = ''
     }
     agent any
@@ -30,8 +30,10 @@ pipeline {
         stage('Build Image') {
             steps {
                 dir('template/nodejs') {
-                    echo ${registry} + ':' + v${BUILD_NUMBER}
-                    // sh 'docker build -t ${registry}:v${BUILD_NUMBER} .'
+                    script {
+                        echo "${registry}:${env.BUILD_NUMBER}"
+                        sh "docker build -t ${registry}:${env.BUILD_NUMBER} ."
+                    }
                 }
             }
         }
@@ -40,18 +42,15 @@ pipeline {
                 sh 'ls -la'
             }
         }
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             dockerImage = docker.build("${registry}:v${BUILD_NUMBER}")
-        //         }
-        //     }
-        // }
         // stage('Push Docker Image') {
         //     steps {
         //         script {
-        //             docker.withRegistry( '', registryCredential ) {
-        //                 dockerImage.push()
+        //             withCredentials([file(credentialsId: registryCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+        //                 sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+        //                 sh 'gcloud auth configure-docker asia-southeast1-docker.pkg.dev'
+        //                 sh "docker push ${registry}:${env.BUILD_NUMBER}"
+        //                 sh "docker tag ${registry}:${env.BUILD_NUMBER} ${registry}:latest"
+        //                 sh "docker push ${registry}:latest"
         //             }
         //         }
         //     }
