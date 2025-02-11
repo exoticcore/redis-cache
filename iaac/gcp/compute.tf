@@ -20,7 +20,7 @@ resource "google_compute_instance" "host" {
   }
 
   metadata = {
-    ssh-keys = "host:${file(var.ssh_public_key)}"
+    ssh-keys = "host-${var.environment}:${file(var.ssh_public_key)}"
   }
 }
 
