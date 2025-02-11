@@ -38,6 +38,11 @@ pipeline {
                                         sh 'ls -la'
                                     }
                                 }
+                                stage('Push Image') {
+                                    steps {
+                                        echo '${registry}'
+                                    }
+                                }
                             }
                         }
                     }
