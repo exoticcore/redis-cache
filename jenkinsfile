@@ -22,7 +22,7 @@ pipeline {
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
                         gcloud auth configure-docker asia-southeast1-docker.pkg.dev
                         EOF
-                    ''''
+                    '''
 
                     // Copy docker-compose.yaml and redis.conf to the remote host
                     sh '''
