@@ -25,6 +25,7 @@ pipeline {
                     sh '''
                         ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@$DEV_HOST << 'EOF'
                         cd /home/$SSH_USER
+                        whoami
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS || echo "Service account key file not found"
                         gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
                         sudo docker compose down || echo "docker-compose not found"
