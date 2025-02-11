@@ -33,7 +33,7 @@ pipeline {
                     script {
                         echo "${registry}:v${env.BUILD_NUMBER}"
                         sh 'whoami'
-                        sh 'docker compose ps'
+                        sh 'docker images'
                         // sh "docker build -t ${registry}:v${env.BUILD_NUMBER} ."
                     }
                 }
