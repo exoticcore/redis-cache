@@ -6,6 +6,12 @@ pipeline {
         SSH_CREDENTIALS_ID = "ssh-dev-credentials-id"
     }
 
+    stage ('IaC Terraform Apply') {
+        steps {
+            echo 'Running Terraform Apply'
+        }
+    }
+
     stages {
         stage('Deploy') {
             steps {
