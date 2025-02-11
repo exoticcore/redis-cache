@@ -11,7 +11,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
                         // Copy docker-compose.yaml and nginx.conf to the remote host
-                        sh "scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yaml  $SSH_USER@${DEV_HOST}:/home/$SSH_USER/"
+                        sh "scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yaml redis.conf $SSH_USER@${DEV_HOST}:/home/$SSH_USER/"
 
                         // Run commands on the remote host to deploy the Docker Compose stack and configure Nginx
                         sh """

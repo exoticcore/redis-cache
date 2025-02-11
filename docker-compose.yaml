@@ -30,12 +30,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: rediscasedb
-    volumes:
-      - ./mysql/mysql-init:/docker-entrypoint-initdb.d
-      - ./mysql/mysql-logs:/var/log/mysql
     networks:
       - internal_network
-    command: --general-log=1 --general-log-file=/var/log/mysql/general.log
 
   redis:
     image: redis:7.2.1
