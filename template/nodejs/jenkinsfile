@@ -43,6 +43,10 @@ pipeline {
                                         echo '${registry}'
                                     }
                                 }
+                                stage('Remove Image') {
+                                    steps {
+                                        echo 'Remove Image'
+                                    }
                             }
                         }
                     }
