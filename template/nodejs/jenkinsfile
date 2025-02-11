@@ -1,9 +1,9 @@
 pipeline {
-    // environment {
-    //     registry = "asia-southeast1-docker.pkg.dev/${var.project_id}/nodecache"
-    //     registryCredential = ""
-    //     dockerImage = ''
-    // }
+    environment {
+        registry = "asia-southeast1-docker.pkg.dev/${var.project_id}/nodecache"
+        registryCredential = ""
+        dockerImage = ''
+    }
     agent any
 
     stages {
