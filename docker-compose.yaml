@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   node:
     image: asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository/node-cache:latest
