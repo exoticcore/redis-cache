@@ -1,69 +1,60 @@
 pipeline {
     environment {
         registry = "asia-southeast1-docker.pkg.dev/sc-spark/sc-spark-repository"
-        registryCredential = "gcp-credentials-id"
-        dockerImage = "node-cache:${env.BUILD_ID}"
+        registryCredential = ""
+        dockerImage = ''
     }
     agent any
 
     stages {
-        stage('Change Directory') {
+        stage('Unit Test') {
+            steps {
+                echo 'Running Unit Test'
+            }
+        }
+        stage('Integration Test') {
+            steps {
+                echo 'Running Integration Test'
+            }
+        }
+        stage('End to End Test') {
+            steps {
+                echo 'Running End to End Test'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                echo 'Running SonarQube Analysis'
+            }
+        }
+        stage('Build Image') {
             steps {
                 dir('template/nodejs') {
-                    script {
-                        // Run the rest of the pipeline within this directory
-                        pipeline {
-                            stages {
-                                stage('Unit Test') {
-                                    steps {
-                                        echo 'Running Unit Test'
-                                        // Add your unit test commands here
-                                    }
-                                }
-                                stage('Integration Test') {
-                                    steps {
-                                        echo 'Running Integration Test'
-                                        // Add your integration test commands here
-                                    }
-                                }
-                                stage('End to End Test') {
-                                    steps {
-                                        echo 'Running End to End Test'
-                                        // Add your end-to-end test commands here
-                                    }
-                                }
-                                stage('SonarQube Analysis') {
-                                    steps {
-                                        echo 'Running SonarQube Analysis'
-                                        // Add your SonarQube analysis commands here
-                                    }
-                                }
-                                stage('Build Docker Image') {
-                                    steps {
-                                        script {
-                                            echo '${registry}:v${env.BUILD_ID}'
-                                            // sh "docker build -t ${registry}/${dockerImage} ."
-                                        }
-                                    }
-                                }
-                                // stage('Push Docker Image') {
-                                //     steps {
-                                //         script {
-                                //             withCredentials([file(credentialsId: registryCredential, variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
-                                //                 sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
-                                //                 sh 'gcloud auth configure-docker asia-southeast1-docker.pkg.dev'
-                                //                 sh "docker push ${registry}/${dockerImage}"
-                                //                 sh "docker tag ${registry}/${dockerImage} ${registry}/node-cache:latest"
-                                //                 sh "docker push ${registry}/node-cache:latest"
-                                //             }
-                                //         }
-                                //     }
-                                // }
-                            }
-                        }
-                    }
+                    echo '${registry}:v${BUILD_NUMBER}'
+                    // sh 'docker build -t ${registry}:v${BUILD_NUMBER} .'
                 }
             }
         }
+        stage('List again') {
+            steps {
+                sh 'ls -la'
+            }
+        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             dockerImage = docker.build("${registry}:v${BUILD_NUMBER}")
+        //         }
+        //     }
+        // }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry( '', registryCredential ) {
+        //                 dockerImage.push()
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
