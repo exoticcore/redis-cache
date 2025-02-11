@@ -23,9 +23,7 @@ pipeline {
 
                     // Run commands on the remote host to deploy the Docker Compose stack
                     sh '''
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@$DEV_HOST << EOF
-                        sudo mv /home/$SSH_USER/redis.conf /etc/redis/redis.conf || echo "redis.conf not found"
-                        sudo systemctl restart redis || echo "redis service not found"
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY $SSH_USER@$DEV_HOST << 'EOF'
                         cd /home/$SSH_USER
                         gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS || echo "Service account key file not found"
                         gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
